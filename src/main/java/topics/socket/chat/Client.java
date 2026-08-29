@@ -1,4 +1,4 @@
-package topics.socket;
+package topics.socket.chat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
