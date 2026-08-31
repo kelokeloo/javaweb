@@ -53,7 +53,30 @@ AUTO_INCREMENT  自增：插入时不填，数据库自动 +1（通常配主键�
 NOT NULL      不能为空：这一列必须有值
 UNIQUE        唯一：这一列的值不能重复（手机号这种）
 DEFAULT 值    不填时用这个默认值
+
+FOREIGN KEY  外键：声明这一列引用另一张表的主键（见下）
 ```
+
+**外键（FOREIGN KEY）：声明"这一列引用另一张表的主键"。**
+
+```sql
+-- course 表的 teacher_id 引用 teacher 表的主键
+CREATE TABLE course (
+    course_id  BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name       VARCHAR(50) NOT NULL,
+    credit     INT,
+    teacher_id BIGINT,
+    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id)
+);
+```
+
+```text
+声明：FOREIGN KEY (本表列) REFERENCES 别的表(它的主键)
+作用：填 teacher_id 时，数据库检查这个老师是否真的存在 —— 不存在就报错
+     （写进"引用完整性"，让数据库替你把关系管起来）
+```
+
+> 建表时要不要用外键，是**数据库设计**阶段定的事（见 [数据库设计](../database-design.md)）；这里只记住语法——**`FOREIGN KEY (列) REFERENCES 表(列)`，一行声明完**。
 
 **类型该怎么选？** 一句话原则——**数字用数字类型，文本用字符串，钱和精确值用 DECIMAL，时间用日期类型。** 把数字存进字符串、把价格存成 FLOAT，都是以后要踩的坑。
 
