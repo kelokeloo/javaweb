@@ -14,4 +14,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!-- JDBC 驱动：源码只 import JDK 自带的 java.sql 标准接口，编译时用不到它；
+             运行时 DriverManager 反射加载驱动实现类，所以 scope 用 runtime（编译没有，运行必须有） -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.3.0</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
 </project>
