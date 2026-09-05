@@ -25,3 +25,17 @@ java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/
 也可以在 IDEA 中运行 `topics.mybatis.MyBatisBeginnerDemo`。
 
 本入门示例使用 `session.getMapper(MyBatisStudentMapper.class)` 获取 Mapper 接口，再调用 `mapper.findAll()` 查询数据。SQL 仍定义在 Mapper XML 中，由接口方法名和 XML 中的 statement id 对应。这样业务代码不需要直接依赖 namespace + statement id 字符串，是 MyBatis 更常见的使用方式。
+
+### resultMap 示例
+
+运行 `topics.mybatis.MyBatisResultMapDemo` 可以查看 `resultMap` 的使用方式：
+
+```bash
+java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/dev/stdout)" topics.mybatis.MyBatisResultMapDemo
+```
+
+`MyBatisStudentMapper.xml` 中的 `studentSummaryMap` 显式配置了数据库列和 Java 属性的对应关系：`student_id` 映射到 `id`，`name` 映射到 `studentName`，`grade` 映射到 `className`。查询通过 `resultMap="studentSummaryMap"` 引用这组映射，而不是使用 `resultType` 的自动映射。
+
+这个查询返回的 `MyBatisStudentSummary` 是一个 DTO。DTO 是 `Data Transfer Object` 的缩写，中文叫“数据传输对象”，用于在不同层或不同系统之间传递数据；它不是 “data to object”。DTO 通常只保存本次场景需要的数据，不负责数据库操作或业务逻辑。
+
+这个例子中 Java 属性名和数据库列名刻意不同，因此能直观看出 `resultMap` 的作用。虽然 SQL 别名也可以实现类似效果，但在字段名复杂、需要类型转换或存在嵌套对象时，`resultMap` 可以提供更集中、更明确的映射配置。

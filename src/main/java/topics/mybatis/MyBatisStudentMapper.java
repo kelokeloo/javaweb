@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface MyBatisStudentMapper {
     List<MyBatisStudent> findAll();
+
+    List<MyBatisStudentSummary> findAllWithResultMap();
 }
