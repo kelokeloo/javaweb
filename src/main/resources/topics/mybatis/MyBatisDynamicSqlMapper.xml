@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="topics.mybatis.MyBatisDynamicSqlMapper">
+
+    <!-- 公共 SELECT 列片段：可被多个 <select> 通过 <include> 复用，避免重复粘贴列清单。 -->
+    <sql id="baseColumns">
+        product_id, product_name, category, brand, price, status, stock, created_at
+    </sql>
+
+    <!-- <sql>/<include>：引用上面的公共列。 -->
+    <select id="findAll" resultType="MyBatisProduct">
+        SELECT <include refid="baseColumns"/>
+        FROM mybatis_product
+        ORDER BY product_id
+    </select>
+
+    <!--
+        核心是 <where> + <if>：
+        <where> 会自动去掉第一个条件前多余的 AND/OR；某个 <if> 不成立时整段不拼接。
+        <bind> 在 <if> 内部声明变量，仅当条件成立时才执行，避免 null 拼出 "null"。
+        <choose>/<when>/<otherwise> 相当于 if-elseif-else，用于「排他」的排序策略。
+    -->
+    <select id="searchProducts" resultType="MyBatisProduct" parameterType="MyBatisProductQuery">
+        SELECT <include refid="baseColumns"/>
+        FROM mybatis_product
+        <where>
+            <if test="productName != null and productName != ''">
+                <bind name="namePattern" value="'%' + productName + '%'"/>
+                AND product_name LIKE #{namePattern}
+            </if>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="brand != null and brand != ''">
+                AND brand = #{brand}
+            </if>
+            <if test="minPrice != null">
+                AND price &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice != null">
+                AND price &lt;= #{maxPrice}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="minStock != null">
+                AND stock &gt;= #{minStock}
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'price'">ORDER BY price</when>
+            <when test="sortBy == 'name'">ORDER BY product_name</when>
+            <when test="sortBy == 'created_at'">ORDER BY created_at</when>
+            <otherwise>ORDER BY product_id</otherwise>
+        </choose>
+    </select>
+
+    <!--
+        <set> + <if>：只更新传入的非空字段。
+        <set> 会自动去掉最后一个赋值后的多余逗号，等价于 <trim prefix="SET" suffixOverrides=",">。
+    -->
+    <update id="updateSelective" parameterType="MyBatisProduct">
+        UPDATE mybatis_product
+        <set>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="brand != null">brand = #{brand},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="stock != null">stock = #{stock},</if>
+        </set>
+        WHERE product_id = #{productId}
+    </update>
+
+    <!-- <foreach>：遍历集合生成 "IN (a, b, c)"。 -->
+    <select id="selectByIds" resultType="MyBatisProduct">
+        SELECT <include refid="baseColumns"/>
+        FROM mybatis_product
+        WHERE product_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- <foreach>：一次生成多条 VALUES 完成批量插入；useGeneratedKeys 回填每条的自增主键。 -->
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO mybatis_product (product_name, category, brand, price, status, stock)
+        VALUES
+        <foreach collection="products" item="p" separator=",">
+            (#{p.productName}, #{p.category}, #{p.brand}, #{p.price}, #{p.status}, #{p.stock})
+        </foreach>
+    </insert>
+</mapper>

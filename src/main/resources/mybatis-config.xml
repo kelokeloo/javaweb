@@ -11,6 +11,8 @@
         <typeAlias type="topics.mybatis.MyBatisStudentSummary" alias="MyBatisStudentSummary"/>
         <typeAlias type="topics.mybatis.MyBatisCustomer" alias="MyBatisCustomer"/>
         <typeAlias type="topics.mybatis.MyBatisOrder" alias="MyBatisOrder"/>
+        <typeAlias type="topics.mybatis.MyBatisProduct" alias="MyBatisProduct"/>
+        <typeAlias type="topics.mybatis.MyBatisProductQuery" alias="MyBatisProductQuery"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">
@@ -26,5 +28,6 @@
     <mappers>
         <mapper resource="topics/mybatis/MyBatisStudentMapper.xml"/>
         <mapper resource="topics/mybatis/MyBatisOrderCustomerMapper.xml"/>
+        <mapper resource="topics/mybatis/MyBatisDynamicSqlMapper.xml"/>
     </mappers>
 </configuration>
