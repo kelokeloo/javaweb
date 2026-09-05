@@ -39,3 +39,20 @@ java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/
 这个查询返回的 `MyBatisStudentSummary` 是一个 DTO。DTO 是 `Data Transfer Object` 的缩写，中文叫“数据传输对象”，用于在不同层或不同系统之间传递数据；它不是 “data to object”。DTO 通常只保存本次场景需要的数据，不负责数据库操作或业务逻辑。
 
 这个例子中 Java 属性名和数据库列名刻意不同，因此能直观看出 `resultMap` 的作用。虽然 SQL 别名也可以实现类似效果，但在字段名复杂、需要类型转换或存在嵌套对象时，`resultMap` 可以提供更集中、更明确的映射配置。
+
+### CRUD 示例
+
+`MyBatisCrudDemo` 演示了常见的增删改查组织方式：
+
+- `MyBatisStudent`：实体对象，承载 SQL 参数和查询结果。
+- `MyBatisStudentMapper`：只声明数据访问方法，不写 SQL。
+- `MyBatisStudentMapper.xml`：集中编写 `select`、`insert`、`update`、`delete`。
+- `MyBatisCrudDemo`：按业务流程获取 Mapper、调用方法并管理事务。
+
+运行：
+
+```bash
+java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/dev/stdout)" topics.mybatis.MyBatisCrudDemo
+```
+
+这个演示使用 `openSession(false)` 关闭自动提交，插入、修改、删除都针对同一条临时数据，最后调用 `session.rollback()`。因此可以完整观察 CRUD 的执行顺序，同时不会把演示数据真正写入数据库。正式业务需要持久化时，把事务成功路径改为 `session.commit()`，异常路径保留 `rollback()`。

@@ -12,6 +12,28 @@
         SELECT student_id, name, grade, score FROM mybatis_student ORDER BY student_id
     </select>
 
+    <select id="findById" resultType="MyBatisStudent">
+        SELECT student_id, name, grade, score
+        FROM mybatis_student
+        WHERE student_id = #{studentId}
+    </select>
+
+    <insert id="insert" parameterType="MyBatisStudent" useGeneratedKeys="true" keyProperty="studentId">
+        INSERT INTO mybatis_student (name, grade, score)
+        VALUES (#{name}, #{grade}, #{score})
+    </insert>
+
+    <update id="update" parameterType="MyBatisStudent">
+        UPDATE mybatis_student
+        SET name = #{name}, grade = #{grade}, score = #{score}
+        WHERE student_id = #{studentId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM mybatis_student
+        WHERE student_id = #{studentId}
+    </delete>
+
     <select id="findAllWithResultMap" resultMap="studentSummaryMap">
         SELECT student_id, name, grade, score FROM mybatis_student ORDER BY student_id
     </select>
