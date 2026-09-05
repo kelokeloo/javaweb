@@ -15,6 +15,21 @@
     </properties>
 
     <dependencies>
+        <!-- Lombok：编译期生成 getter/setter、构造方法和 toString -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- MyBatis 核心：提供 SqlSessionFactory、Mapper 映射和 XML 配置能力 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.19</version>
+        </dependency>
+
         <!-- JDBC 驱动：源码只 import JDK 自带的 java.sql 标准接口，编译时用不到它；
              运行时 DriverManager 反射加载驱动实现类，所以 scope 用 runtime（编译没有，运行必须有） -->
         <dependency>
@@ -24,5 +39,25 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
+                <configuration>
+                    <proc>full</proc>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
