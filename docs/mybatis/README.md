@@ -24,4 +24,4 @@ java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/
 
 也可以在 IDEA 中运行 `topics.mybatis.MyBatisBeginnerDemo`。
 
-本入门示例使用 `session.selectList("topics.mybatis.MyBatisStudentMapper.findAll")`，通过 Mapper XML 的 namespace + statement id 找到 SQL。`session.getMapper(...)` 也很常用，但会放到后续“常见用法”示例中专门对比。
+本入门示例使用 `session.getMapper(MyBatisStudentMapper.class)` 获取 Mapper 接口，再调用 `mapper.findAll()` 查询数据。SQL 仍定义在 Mapper XML 中，由接口方法名和 XML 中的 statement id 对应。这样业务代码不需要直接依赖 namespace + statement id 字符串，是 MyBatis 更常见的使用方式。
