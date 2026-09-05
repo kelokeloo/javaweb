@@ -56,3 +56,26 @@ java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/
 ```
 
 这个演示使用 `openSession(false)` 关闭自动提交，插入、修改、删除都针对同一条临时数据，最后调用 `session.rollback()`。因此可以完整观察 CRUD 的执行顺序，同时不会把演示数据真正写入数据库。正式业务需要持久化时，把事务成功路径改为 `session.commit()`，异常路径保留 `rollback()`。
+
+### 复杂查询：订单和客户
+
+订单和客户使用一对多关系：一个客户可以有多个订单，一个订单只属于一个客户。执行 `sql/mybatis/02-order-customer.sql` 创建示例表和数据：
+
+```bash
+mysql -h127.0.0.1 -P3306 -uroot -p < sql/mybatis/02-order-customer.sql
+```
+
+`MyBatisOrderCustomerDemo` 展示两种嵌套映射：
+
+- `findCustomerWithOrders`：客户包含多个订单，使用 `resultMap` 的 `<collection>`。
+- `findOrderWithCustomer`：订单包含一个客户，使用 `resultMap` 的 `<association>`。
+
+初次接触时可以这样理解：`<collection>` 用来接收多行查询结果，并把它们组装成一个集合属性；`<association>` 用来把当前行中的多列组装成一个嵌套对象属性。比如客户查询返回张三和他的两条订单，MyBatis 会把两行订单组装到同一个 `Customer.orders` 列表中；订单查询返回一行订单及客户列，MyBatis 会把客户相关列组装成 `Order.customer` 对象。它们都是 `resultMap` 的对象映射能力，不是 SQL 聚合函数。
+
+运行：
+
+```bash
+java -cp "target/classes:$(mvn -q dependency:build-classpath -Dmdep.outputFile=/dev/stdout)" topics.mybatis.MyBatisOrderCustomerDemo
+```
+
+两个查询都使用一次 `JOIN` 完成映射。客户查询中的 `LEFT JOIN` 可以保留没有订单的客户；订单查询中的 `INNER JOIN` 则表示订单必须关联一个客户。两套 `resultMap` 不互相继续嵌套，避免 `Customer -> orders -> customer` 的循环对象结构。

@@ -4,11 +4,13 @@
     <properties resource="mybatis-db.properties"/>
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
-        <setting name="logImpl" value="STDOUT_LOGGING"/>
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
     </settings>
     <typeAliases>
         <typeAlias type="topics.mybatis.MyBatisStudent" alias="MyBatisStudent"/>
         <typeAlias type="topics.mybatis.MyBatisStudentSummary" alias="MyBatisStudentSummary"/>
+        <typeAlias type="topics.mybatis.MyBatisCustomer" alias="MyBatisCustomer"/>
+        <typeAlias type="topics.mybatis.MyBatisOrder" alias="MyBatisOrder"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">
@@ -23,5 +25,6 @@
     </environments>
     <mappers>
         <mapper resource="topics/mybatis/MyBatisStudentMapper.xml"/>
+        <mapper resource="topics/mybatis/MyBatisOrderCustomerMapper.xml"/>
     </mappers>
 </configuration>
