@@ -6,6 +6,7 @@
 
 - [JDBC 文档](docs/java-jdbc.md) · 代码：`src/main/java/topics/jdbc`
 - [MyBatis 入门](docs/mybatis/README.md) · 代码：`src/main/java/topics/mybatis`
+- [Lombok 常用注解](docs/lombok/README.md) · 代码：`src/main/java/topics/lombok`
 - [Socket 示例](src/main/java/topics/socket) · 代码：`src/main/java/topics/socket`
 - [SQL 语言](docs/sql-languages/README.md)
 
