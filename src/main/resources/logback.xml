@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  全项目共用的唯一日志出口。Logback 启动时自动在 classpath 根目录找这个文件。
+  第 3 课讲它的三要素（logger / appender / pattern），第 4 课改按包控级别，
+  第 5 课的 ERROR 单独落文件也靠这里——整个主题都在迭代这一个文件。
+-->
+<configuration>
+
+    <!-- pattern 转换符：
+         %d{...}   时间（花括号是格式）
+         %thread  线程名
+         %-5level 级别，左对齐占 5 位
+         %logger{36} logger 名（包名缩写到 ≤36 字符）
+         %msg      消息      %n 换行
+         %L 也有行号/方法名，但取位置信息偏慢，生产慎用 -->
+    <!-- 复用变量：控制台用短格式（人眼扫），文件用全日期格式（长期检索） -->
+    <property name="CONSOLE_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+    <property name="FILE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- 出口 1：控制台。IDEA 里跑 demo 看到的就是它 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 出口 2：文件 + 滚动归档。企业标配：按天切、单文件封顶、只留 N 天，照抄即可 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/logging-demo.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/logging-demo.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 出口 3：只收 ERROR。生产告警系统的抓取对象，运维只盯这个文件 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/logging-error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- ============ 按包控级别（第 4 课核心）：logger 名按 . 分层成树，子继承父 ============ -->
+
+    <!-- 我们自己写的包：放到 DEBUG。自己代码的诊断信息随便打，生产不受影响（生产配置里没有这行） -->
+    <logger name="topics" level="DEBUG"/>
+
+    <!-- 框架内部话很多（VFS 扫 classpath 之类），INFO 起步压住噪音 -->
+    <logger name="org.apache.ibatis" level="INFO"/>
+
+    <!-- 兜底：全进程默认 INFO，三个出口都挂上 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+</configuration>
