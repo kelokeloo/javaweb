@@ -1,4 +1,7 @@
-package topics.mybatis;
+package topics.mybatis.mapper;
+
+import topics.mybatis.entity.MyBatisStudent;
+import topics.mybatis.entity.MyBatisStudentSummary;
 
 import org.apache.ibatis.annotations.Param;
 

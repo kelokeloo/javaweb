@@ -1,4 +1,6 @@
-package topics.mybatis;
+package topics.mybatis.mapper;
+
+import topics.mybatis.entity.MyBatisProduct;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;

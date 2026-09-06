@@ -1,10 +1,13 @@
-package topics.mybatis;
+package topics.mybatis.mapper;
+
+import topics.mybatis.entity.MyBatisProduct;
+import topics.mybatis.entity.MyBatisProductQuery;
 
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/** 动态 SQL 演示的 Mapper 接口：绑定资源目录下的 MyBatisDynamicSqlMapper.xml。 */
+/** 动态 SQL 演示的 Mapper 接口：绑定 resources/topics/mybatis/mapper 下的同名 XML。 */
 public interface MyBatisDynamicSqlMapper {
 
     /** <sql> + <include>：复用公共 SELECT 列。 */

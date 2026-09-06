@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="topics.mybatis.MyBatisDynamicSqlMapper">
+<mapper namespace="topics.mybatis.mapper.MyBatisDynamicSqlMapper">
 
     <!-- 公共 SELECT 列片段：可被多个 <select> 通过 <include> 复用，避免重复粘贴列清单。 -->
     <sql id="baseColumns">
