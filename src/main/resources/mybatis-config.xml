@@ -29,5 +29,7 @@
         <mapper resource="topics/mybatis/MyBatisStudentMapper.xml"/>
         <mapper resource="topics/mybatis/MyBatisOrderCustomerMapper.xml"/>
         <mapper resource="topics/mybatis/MyBatisDynamicSqlMapper.xml"/>
+        <!-- 纯注解 Mapper：没有 XML 文件，用 class 绑定即可 -->
+        <mapper class="topics.mybatis.MyBatisAnnotationMapper"/>
     </mappers>
 </configuration>
